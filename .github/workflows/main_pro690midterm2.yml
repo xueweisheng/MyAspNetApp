@@ -14,8 +14,12 @@ permissions:
       contents: read
 
 jobs:
-  build:
+  deploy:
     runs-on: windows-latest
+
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
       - uses: actions/checkout@v4
@@ -49,3 +53,6 @@ jobs:
       - name: logout
         run: |
           az logout
+
+      - name: Display Web App URL
+        run: echo "Web App URL:${{ steps.deploy-to-webapp.outputs.webapp-url }}"
