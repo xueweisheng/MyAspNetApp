@@ -26,12 +26,16 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Release -o ${{github.workspace}}/myapp
 
       - name: Zip Published Files
-        run: powershell Compress-Archive -Path ${{ env.DOTNET_ROOT }}/publish/* -DestinationPath ${{ env.DOTNET_ROOT }}/publish.zip -Force
+        run: powershell Compress-Archive -Path ${{ github.workspace }}/publish/* -DestinationPath ${{ github.workspace }}/publish.zip -Force
 
-   
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          path: ${{github.workspace}}/myapp 
 
  
   deploy:
@@ -54,4 +58,4 @@ jobs:
           app-name: 'PRO690Midterm2'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C3C6876DAECE4017A5D792E0DDA3760C }}
-          package:  ${{ env.DOTNET_ROOT }}/publish.zip
+          package:  ${{ github.workspace }}/publish.zip
