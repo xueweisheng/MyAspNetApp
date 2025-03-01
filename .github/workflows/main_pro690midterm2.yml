@@ -31,11 +31,7 @@ jobs:
       - name: Zip Published Files
         run: powershell Compress-Archive -Path ${{ env.DOTNET_ROOT }}/publish/* -DestinationPath ${{ env.DOTNET_ROOT }}/publish.zip -Force
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+   
 
  
   deploy:
