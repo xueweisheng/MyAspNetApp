@@ -28,6 +28,9 @@ jobs:
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
+      - name: Zip Published Files
+        run: powershell Compress-Archive -Path ${{ env.DOTNET_ROOT }}/publish/* -DestinationPath ${{ env.DOTNET_ROOT }}/publish.zip -Force
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -48,9 +51,6 @@ jobs:
         with:
           name: .net-app
 
-      - name: List Output Directory (Windows)
-        run: Get-ChildItem -Path . -Recurse    # For Windows PowerShell
-
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
@@ -58,4 +58,4 @@ jobs:
           app-name: 'PRO690Midterm2'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C3C6876DAECE4017A5D792E0DDA3760C }}
-          package:  ${{ github.workspace }}/publish
+          package:  ${{ env.DOTNET_ROOT }}/publish.zip
