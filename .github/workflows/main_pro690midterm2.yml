@@ -54,4 +54,4 @@ jobs:
           app-name: 'PRO690Midterm2'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C3C6876DAECE4017A5D792E0DDA3760C }}
-          package: .
+          package: ./publish
