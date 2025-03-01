@@ -9,12 +9,22 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+      id-token: write
+      contents: read
+
 jobs:
-  build:
+  deploy:
     runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
+
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
@@ -26,27 +36,7 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
-
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp 
- 
-  deploy:
-    runs-on: windows-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/upload-artifact@v4
-        with:
-          name: .net-app
+        run: dotnet publish -c Release -o ${{ github.workspace }}/myapp
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -54,5 +44,11 @@ jobs:
         with:
           app-name: 'PRO690Midterm2'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-          package:  ${{env.DOTNET_ROOT }}/publish.zip
+          package: ${{ github.workspace }}/myapp
+
+      - name: logout
+        run: |
+          az logout
+
+      - name: Display Web App URL
+        run: echo "Web App URL:https://PRO690Midterm2.azurewebsites.net"
