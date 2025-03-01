@@ -17,10 +17,6 @@ jobs:
   deploy:
     runs-on: windows-latest
 
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
     steps:
       - uses: actions/checkout@v4
 
@@ -55,4 +51,4 @@ jobs:
           az logout
 
       - name: Display Web App URL
-        run: echo "Web App URL:${{ steps.deploy-to-webapp.outputs.webapp-url }}"
+        run: echo "Web App URL:https://PRO690Midterm2.azurewebsites.net"
