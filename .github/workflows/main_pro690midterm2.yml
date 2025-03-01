@@ -37,6 +37,9 @@ jobs:
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp 
+
+      - name: List Published Files (Debugging)
+        run: ls -R ${{ env.DOTNET_ROOT }}/myapp
  
   deploy:
     runs-on: windows-latest
@@ -51,6 +54,9 @@ jobs:
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
+          
+      - name: List Published Files (Debugging)
+        run: ls -R ${{ env.DOTNET_ROOT }}/myapp
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
